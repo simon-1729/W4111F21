@@ -1,0 +1,1965 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{4111\_s21\_hw1\_programming}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \#
+
+{ COMS W4111-002 (Fall 2021)Introduction to Databases }
+
+{ Homework 1: Programming - 10 Points }
+
+    \textbf{Note:} Please replace the information below with your last name,
+first name and UNI.
+
+\textless span style=``font-size: 20pt; line-height: 1.2'';
+\textgreater{} Zeng\_Xiangyi, xz2727
+
+    \hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+\hypertarget{objectives}{%
+\subsubsection{Objectives}\label{objectives}}
+
+This homework has you practice and build skill with:
+
+\begin{itemize}
+\tightlist
+\item
+  PART A: (1 point) Understanding relational databases
+\item
+  PART B: (1 point) Understanding relational algebra
+\item
+  PART C: (1 point) Cleaning data
+\item
+  PART D: (1 point) Performing simple SQL queries to analyze the data.
+\item
+  PART E: (6 points) CSVDataTable.py
+\end{itemize}
+
+\textbf{Note:} The motivation for PART E may not be clear. The
+motivation will become clearer as the semester proceeds. The purpose of
+PART E is to get you started on programming in Python and manipulating
+data.
+
+\hypertarget{submission}{%
+\subsubsection{Submission}\label{submission}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  File \textgreater{} Print Preview \textgreater{} Download as PDF
+\item
+  Upload .pdf and .ipynb to GradeScope
+\item
+  Upload CSVDataTable.py and CSVDataTable\_Tests.py
+\end{enumerate}
+
+\textbf{This assignment is due September 24, 11:59 pm ET}
+
+\hypertarget{collaboration}{%
+\subsubsection{Collaboration}\label{collaboration}}
+
+\begin{itemize}
+\tightlist
+\item
+  You may use any information you get in TA or Prof.~Ferguson's office
+  hours, from lectures or from recitations.
+\item
+  You may use information that you find on the web.
+\item
+  You are NOT allowed to collaborate with other students outside of
+  office hours.
+\end{itemize}
+
+    \hypertarget{part-a-written}{%
+\section{Part A: Written}\label{part-a-written}}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  What is a database management system?
+
+  A database management system is a software that designed to interact
+  with applications,end users and database itself in order to
+  manipulate, retrieve and manage the data.
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  What is a primary key and why is it important?
+
+  A primary key is a subset of the attributes of entity that uniquely
+  specify each element in the entity set. Using the primary key, you can
+  easily identify and find unique element in an entity set, therefore
+  inserting, updating, deleting or restoring data from entity set can be
+  optimized by primary key.
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  Please explain the differences between SQL, MySQL Server and DataGrip?
+
+  SQL is structural querry language, whereas MySQL Server is a database
+  server program that manages access to the actual databases on disk or
+  in the memory. DataGrip is a database management environment for
+  developers and it is designed to query, create, and manage databases.
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  What are 4 different types of DBMS table relationships, give a brief
+  explanaition for each?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  One-to-One: \textbf{Each record of A table is related to only one
+  record of B table and vice versa. Then A and B are in one-to-one
+  relationship.}
+\item
+  One-to-Many: \textbf{Each record in A table relates to many records in
+  B table but each record of B table can only relate to one record of A
+  table. Then A and B are in one-to-many relationship.}
+\item
+  Many-to-One: \textbf{Each record in A table relates to many records in
+  B table but each record of B table can only relate to one record of A
+  table. Then B and A are in many-to-one relationship.}
+\item
+  Many-to-Many: \textbf{Each record in A table relates to many records
+  in B table and vice versa. Then A and B are in many-to-many
+  relationship.}
+\end{itemize}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\item
+  What is an ER model?
+
+  ER model stands for an Entity-Relationship model.It is a high-level
+  data model. This model is used to define the data elements and
+  relationship for a specified system.
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Using Lucidchart draw an example of a logical ER model using Crow's
+  Foot notation for Columbia classes. The entity types are:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Students, Professors, and Classes.
+  \item
+    The relationships are:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      A Class has exactly one Professor.
+    \item
+      A Student has exactly one professor who is an \emph{advisor.}
+    \item
+      A Professor may advise 0, 1 or many Students.
+    \item
+      A Class has 0, 1 or many enrolled students.
+    \item
+      A Student enrolls in 0, 1 or many Classes.
+    \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  You can define what you think are common attributes for each of the
+  entity types. Do not define more than 5 or 6 attributes per entity
+  type.
+\item
+  In this example, explicitly show an example of a primary-key, foreign
+  key, one-to-many relationship, and many-to-many relationship.
+\end{itemize}
+
+\textbf{Notes:} - If you have not already done so, please register for a
+free account at Lucidchart.com. You can choose the option at the bottom
+of the left pane to add the ER diagram shapes. - You can take a screen
+capture of you diagram and save in the zip directory that contains you
+Jupyter notebook. Edit the following cell and replace ``Boromir.jpg''
+with the name of the file containing your screenshot.
+
+    Use the following line to upload a photo of your Luicdchart.
+
+    \hypertarget{part-b-relational-algebra}{%
+\section{Part B: Relational Algebra}\label{part-b-relational-algebra}}
+
+    You will use \href{https://dbis-uibk.github.io/relax/landing}{the online
+relational calculator}, choose the ``Karlsruhe University of Applied
+Sciences'' dataset.
+
+An anti-join is a form of join with reverse logic. Instead of returning
+rows when there is a match (according to the join predicate) between the
+left and right side, an anti-join returns those rows from the left side
+of the predicate for which there is no match on the right.
+
+The Anti-Join Symbol is ▷.
+
+    Consider the following relational algebra expression and result.
+
+/* (1) Set X = The set of classrooms in buildings Taylor or Watson. */
+
+\begin{verbatim}
+    X = σ building='Watson' ∨ building='Taylor' (classroom)
+\end{verbatim}
+
+/* (2) Set Y = The Anti-Join of department and X */
+
+\begin{verbatim}
+    Y = (department ▷ X)
+\end{verbatim}
+
+/* (3) Display the rows in Y. */
+
+\begin{verbatim}
+    Y
+    
+\end{verbatim}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Find an alternate expression to (2) that computes the correct answer
+  given X. Display the execution of your query below.
+\end{enumerate}
+
+    \hypertarget{part-c-data-clean-up}{%
+\section{Part C: Data Clean Up}\label{part-c-data-clean-up}}
+
+\hypertarget{please-note-you-must-make-a-new-schema-using-the-lahmansdb_to_clean.sql-file-provided-in-the-data-folder.}{%
+\subsection{Please note: You MUST make a new schema using the
+lahmansdb\_to\_clean.sql file provided in the data
+folder.}\label{please-note-you-must-make-a-new-schema-using-the-lahmansdb_to_clean.sql-file-provided-in-the-data-folder.}}
+
+Use thelahmansdb\_to\_clean.sql file to make a new schema containing the
+raw data. The lahman database you created in Homework 0 has already been
+cleaned with all the constraints and will be used for Part D. Knowing
+how to clean data and add integrity constraints is very important which
+is why you go through the steps in part C.
+
+TLDR: If you use the HW0 lahman schema for this part you will get a lot
+of errors and recieve a lot of deductions.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} You will need to follow instructions from HW 0 to make a new schema, import the data. }
+\PY{c+c1}{\PYZsh{} Connect to the unclean schema below by setting the database host, user ID and password.}
+\PY{o}{\PYZpc{}}\PY{k}{load\PYZus{}ext} sql
+\PY{o}{\PYZpc{}}\PY{k}{sql} mysql+pymysql://root:zxy3221915@localhost/lahmansdb\PYZus{}to\PYZus{}clean
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The sql extension is already loaded. To reload it, use:
+  \%reload\_ext sql
+    \end{Verbatim}
+
+    Data cleanup: For each table we want you to clean, we have provided a
+list of changes you have to make. You can reference the cleaned lahman
+db for inspiration and guidance, but know that there are different ways
+to clean the data and you will be graded for your choice
+rationalization. You should make these changes through DataGrip's
+workbench's table editor and/or using SQL queries. In this part you will
+clean two tables: People and Batting.
+
+\hypertarget{you-must-have}{%
+\subsubsection{You must have:}\label{you-must-have}}
+
+\begin{itemize}
+\tightlist
+\item
+  A brief explanation of why you think the change we requested is
+  important.
+\item
+  What change you made to the table.
+\item
+  Any queries you used to make the changes, either the ones you wrote or
+  the Alter statements provided by DataGrip's editor.
+\item
+  Executed the test statements we provided
+\item
+  The cleaned table's new create statement (after you finish all the
+  changes)
+\end{itemize}
+
+\hypertarget{overview-of-changes}{%
+\subsubsection{Overview of Changes:}\label{overview-of-changes}}
+
+People Table
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{-1}
+\tightlist
+\item
+  Primary Key (Explanation is given, but you still must add the key to
+  your table yourself)
+\item
+  Empty strings to NULLs
+\item
+  Column typing
+\item
+  isDead column
+\item
+  deathDate and birthDate column
+\end{enumerate}
+
+Batting Table
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Empty strings to NULLs
+\item
+  Column typing
+\item
+  Primary Key
+\item
+  Foreign Key
+\end{enumerate}
+
+\hypertarget{how-to-make-the-changes}{%
+\subsubsection{How to make the changes:}\label{how-to-make-the-changes}}
+
+\textbf{Using the Table Editor:}
+
+When you hit apply, a popup will open displaying the ALTER statments sql
+generates. Copy the sql provided first and paste it into this notebook.
+Then you can apply the changes. This means that you are NOT executing
+the ALTER statements through your notebook.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Right click on the table \textgreater{} Modify Table\ldots{}
+\item
+  Keys \textgreater{} press the + button \textgreater{} input the
+  parameters \textgreater{} Execute OR Keys \textgreater{} press the +
+  button \textgreater{} input the parameters \textgreater{} copy and
+  paste the script generated under ``SQL Script'' and paste into your
+  notebook \textgreater{} Run the cell in jupyter notebook
+\end{enumerate}
+
+\textbf{Using sql queries:}
+
+Copy paste any queries that you write manually into the notebook as
+well!
+
+    \hypertarget{people-table}{%
+\subsection{People Table}\label{people-table}}
+
+\hypertarget{example-add-a-primary-key}{%
+\subsubsection{0) EXAMPLE: Add a Primary
+Key}\label{example-add-a-primary-key}}
+
+(Solutions are given but make sure you still do this step in workbench!)
+
+    \hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We want to add a Primary Key because we want to be able to uniquely
+identify rows within our data. A primary key is also an index, which
+allows us to locate data faster.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I added a Primary Key on the playerID column and made the datatype
+VARCHAR(15)
+
+\textbf{Note:} This is for demonstration purposes only. playerID
+\textbf{is not} a primary key for fielding.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ALTER} \KeywordTok{TABLE}\NormalTok{ \textasciigrave{}lahmansdb\_to\_clean\textasciigrave{}.\textasciigrave{}people\textasciigrave{}}
+\KeywordTok{CHANGE} \KeywordTok{COLUMN}\NormalTok{ \textasciigrave{}playerID\textasciigrave{} \textasciigrave{}playerID\textasciigrave{} }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{15}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{ ,}
+\KeywordTok{ADD} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{ (\textasciigrave{}playerID\textasciigrave{});}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SHOW KEYS FROM people WHERE Key\PYZus{}name = \PYZsq{}PRIMARY\PYZsq{}
+    
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('people', 0, 'PRIMARY', 1, 'playerID', 'A', 19398, None, None, '', 'BTREE',
+'', '', 'YES', None)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{convert-all-empty-strings-to-null}{%
+\subsubsection{1) Convert all empty strings to
+NULL}\label{convert-all-empty-strings-to-null}}
+
+    \hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We want to convert empty strings to NULL because that empty strings mean
+text value with length zero but NULL means absence of value which can be
+any type.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I updated empty strings of every columns of people to NULL.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ playerID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ playerID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthYear}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthYear}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthMonth}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthMonth}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthDay}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthDay}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthCountry}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthCountry}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthState}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthState}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthCity}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ birthCity}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathYear}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathYear}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathMonth}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathMonth}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathDay}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathDay}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathCountry}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathCountry}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathState}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathState}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathCity}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ deathCity}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ nameFirst}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ nameFirst}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ nameLast}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ nameLast}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ nameGiven}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ nameGiven}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ weight}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ weight}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ height}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ height}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ bats}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ bats}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ throws}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ throws}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ debut}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ debut}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ finalGame}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ finalGame}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ retroID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ retroID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ bbrefID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ bbrefID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SELECT * FROM people WHERE birthState = \PYZdq{}\PYZdq{}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+0 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{change-column-datatypes-to-appropriate-values-enum-int-varchar-datetime-etc}{%
+\subsubsection{2) Change column datatypes to appropriate values (ENUM,
+INT, VARCHAR, DATETIME,
+ETC)}\label{change-column-datatypes-to-appropriate-values-enum-int-varchar-datetime-etc}}
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We need datatypes for each column other than just text, so that we can
+add primary key or foreign key for the table.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I modified each column of peopel table to a appropriate datatype, such
+as birthYear of type int,birthCountry of type varchar(255) and debut pf
+type date.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.people}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthYear }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthMonth }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthDay }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthCountry }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthState }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ birthCity }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathYear }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathMonth }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathDay }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathCountry }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathState }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ deathCity }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ nameFirst }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ nameLast }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ nameGiven }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ weight }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ height }\DataTypeTok{int}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ bats }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ throws }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ debut }\DataTypeTok{date}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ finalGame }\DataTypeTok{date}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ retroID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ bbrefID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{add-an-isdead-column-that-is-either-y-or-n}{%
+\subsubsection{3) Add an isDead Column that is either `Y' or
+`N'}\label{add-an-isdead-column-that-is-either-y-or-n}}
+
+\begin{itemize}
+\tightlist
+\item
+  Some things to think of: What data type should this column be? How do
+  you know if the player is dead or not? Maybe you do not know if the
+  player is dead.
+\item
+  You do not need to make guesses about life spans, etc. Just apply a
+  simple rule.
+\end{itemize}
+
+`Y' means the player is dead
+
+`N' means the player is alive
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    Adding an isDead Column as of datatype char(1), since its value can only
+be `Y' or `N', and we can know a player is dead or not from the
+`deathYear' whether it's null or not.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I added isDead column to people table and update the values of this
+column based on the corresponding value of the deathYear column.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{add} \KeywordTok{column}\NormalTok{ isDead }\DataTypeTok{char}\NormalTok{(}\DecValTok{1}\NormalTok{) }\KeywordTok{not} \KeywordTok{null} \KeywordTok{after}\NormalTok{ birthCity;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ isDead }\OperatorTok{=} \StringTok{\textquotesingle{}Y\textquotesingle{}} \KeywordTok{where}\NormalTok{ deathYear }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ isDead }\OperatorTok{=} \StringTok{\textquotesingle{}N\textquotesingle{}} \KeywordTok{where}\NormalTok{ deathYear }\KeywordTok{is} \KeywordTok{null}\NormalTok{ ;}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SELECT * FROM people WHERE isDead = \PYZdq{}N\PYZdq{} limit 10
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+10 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('aardsda01', 1981, 12, 27, 'USA', 'CO', 'Denver', 'N', None, None, None, None,
+None, None, 'David', 'Aardsma', 'David Allan', 215, 75, 'R', 'R',
+datetime.date(2004, 4, 6), datetime.date(2015, 8, 23), 'aardd001', 'aardsda01'),
+ ('aaronha01', 1934, 2, 5, 'USA', 'AL', 'Mobile', 'N', None, None, None, None,
+None, None, 'Hank', 'Aaron', 'Henry Louis', 180, 72, 'R', 'R',
+datetime.date(1954, 4, 13), datetime.date(1976, 10, 3), 'aaroh101',
+'aaronha01'),
+ ('aasedo01', 1954, 9, 8, 'USA', 'CA', 'Orange', 'N', None, None, None, None,
+None, None, 'Don', 'Aase', 'Donald William', 190, 75, 'R', 'R',
+datetime.date(1977, 7, 26), datetime.date(1990, 10, 3), 'aased001', 'aasedo01'),
+ ('abadan01', 1972, 8, 25, 'USA', 'FL', 'Palm Beach', 'N', None, None, None,
+None, None, None, 'Andy', 'Abad', 'Fausto Andres', 184, 73, 'L', 'L',
+datetime.date(2001, 9, 10), datetime.date(2006, 4, 13), 'abada001', 'abadan01'),
+ ('abadfe01', 1985, 12, 17, 'D.R.', 'La Romana', 'La Romana', 'N', None, None,
+None, None, None, None, 'Fernando', 'Abad', 'Fernando Antonio', 235, 74, 'L',
+'L', datetime.date(2010, 7, 28), datetime.date(2019, 9, 28), 'abadf001',
+'abadfe01'),
+ ('abbotgl01', 1951, 2, 16, 'USA', 'AR', 'Little Rock', 'N', None, None, None,
+None, None, None, 'Glenn', 'Abbott', 'William Glenn', 200, 78, 'R', 'R',
+datetime.date(1973, 7, 29), datetime.date(1984, 8, 8), 'abbog001', 'abbotgl01'),
+ ('abbotje01', 1972, 8, 17, 'USA', 'GA', 'Atlanta', 'N', None, None, None, None,
+None, None, 'Jeff', 'Abbott', 'Jeffrey William', 190, 74, 'R', 'L',
+datetime.date(1997, 6, 10), datetime.date(2001, 9, 29), 'abboj002',
+'abbotje01'),
+ ('abbotji01', 1967, 9, 19, 'USA', 'MI', 'Flint', 'N', None, None, None, None,
+None, None, 'Jim', 'Abbott', 'James Anthony', 200, 75, 'L', 'L',
+datetime.date(1989, 4, 8), datetime.date(1999, 7, 21), 'abboj001', 'abbotji01'),
+ ('abbotku01', 1969, 6, 2, 'USA', 'OH', 'Zanesville', 'N', None, None, None,
+None, None, None, 'Kurt', 'Abbott', 'Kurt Thomas', 180, 71, 'R', 'R',
+datetime.date(1993, 9, 7), datetime.date(2001, 4, 13), 'abbok002', 'abbotku01'),
+ ('abbotky01', 1968, 2, 18, 'USA', 'MA', 'Newburyport', 'N', None, None, None,
+None, None, None, 'Kyle', 'Abbott', 'Lawrence Kyle', 200, 76, 'L', 'L',
+datetime.date(1991, 9, 10), datetime.date(1996, 8, 24), 'abbok001',
+'abbotky01')]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{add-a-deathdate-and-birthdate-column}{%
+\subsubsection{4) Add a deathDate and birthDate
+column}\label{add-a-deathdate-and-birthdate-column}}
+
+Some things to think of: What do you do if you are missing information?
+What datatype should this column be?
+
+You have to create this column from other columns in the table.
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    If we miss some information for making the date then we should leave the
+value NULL. The datatype of the columns should be date.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I added two columns in people table and update the value of date based
+on the corresponding year,month and day if all information exist,if not
+leave the value NULL.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{add} \KeywordTok{column}\NormalTok{ deathDate }\DataTypeTok{date} \KeywordTok{after}\NormalTok{ isDead,}
+\KeywordTok{add} \KeywordTok{column}\NormalTok{ birthDate }\DataTypeTok{date} \KeywordTok{after}\NormalTok{ playerID;}
+
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ birthDate }\OperatorTok{=}\NormalTok{ str\_to\_date(}\FunctionTok{concat}\NormalTok{(}\FunctionTok{convert}\NormalTok{(birthYear,}\DataTypeTok{char}\NormalTok{),}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{,}\FunctionTok{convert}\NormalTok{(birthMonth,}\DataTypeTok{char}\NormalTok{),}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{,}\FunctionTok{convert}\NormalTok{(birthDay,}\DataTypeTok{char}\NormalTok{)), }\StringTok{\textquotesingle{}\%Y,\%m,\%d\textquotesingle{}}\NormalTok{)}
+\KeywordTok{where}\NormalTok{ birthYear }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null} \KeywordTok{and}\NormalTok{ birthMonth }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null}  \KeywordTok{and}\NormalTok{ birthDay }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null}\NormalTok{ ;}
+
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.people}
+\KeywordTok{set}\NormalTok{ deathDate }\OperatorTok{=}\NormalTok{ str\_to\_date(}\FunctionTok{concat}\NormalTok{(}\FunctionTok{convert}\NormalTok{(deathYear,}\DataTypeTok{char}\NormalTok{),}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{,}\FunctionTok{convert}\NormalTok{(deathMonth,}\DataTypeTok{char}\NormalTok{),}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{,}\FunctionTok{convert}\NormalTok{(deathDay,}\DataTypeTok{char}\NormalTok{)), }\StringTok{\textquotesingle{}\%Y,\%m,\%d\textquotesingle{}}\NormalTok{)}
+\KeywordTok{where}\NormalTok{ deathYear }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null} \KeywordTok{and}\NormalTok{ deathMonth }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null} \KeywordTok{and}\NormalTok{ deathDay }\KeywordTok{is} \KeywordTok{not} \KeywordTok{null}\NormalTok{ ;}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SELECT deathDate FROM people WHERE deathDate \PYZgt{}= \PYZsq{}2005\PYZhy{}01\PYZhy{}01\PYZsq{} ORDER BY deathDate ASC LIMIT 10;
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+10 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[(datetime.date(2005, 1, 4),),
+ (datetime.date(2005, 1, 7),),
+ (datetime.date(2005, 1, 9),),
+ (datetime.date(2005, 1, 10),),
+ (datetime.date(2005, 1, 21),),
+ (datetime.date(2005, 1, 22),),
+ (datetime.date(2005, 1, 31),),
+ (datetime.date(2005, 2, 4),),
+ (datetime.date(2005, 2, 8),),
+ (datetime.date(2005, 2, 11),)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SELECT birthDate FROM people WHERE birthDate \PYZlt{}= \PYZsq{}1965\PYZhy{}01\PYZhy{}01\PYZsq{} ORDER BY birthDate ASC LIMIT 10;
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+10 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[(datetime.date(1820, 4, 17),),
+ (datetime.date(1824, 10, 5),),
+ (datetime.date(1832, 9, 17),),
+ (datetime.date(1832, 10, 23),),
+ (datetime.date(1835, 1, 10),),
+ (datetime.date(1836, 2, 29),),
+ (datetime.date(1837, 12, 26),),
+ (datetime.date(1838, 3, 10),),
+ (datetime.date(1838, 7, 16),),
+ (datetime.date(1838, 8, 27),)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{final-create-statement}{%
+\subsubsection{Final CREATE Statement}\label{final-create-statement}}
+
+To find the create statement:
+
+\begin{itemize}
+\tightlist
+\item
+  Right click on the table name in workbench
+\item
+  Select `Copy to Clipboard'
+\item
+  Select `Create Statement'
+\end{itemize}
+
+The create statement will now be copied into your clipboard and can be
+pasted into the cell below.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{create} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.people}
+\NormalTok{(}
+\NormalTok{    playerID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{15}\NormalTok{) }\KeywordTok{not} \KeywordTok{null}
+        \KeywordTok{primary} \KeywordTok{key}\NormalTok{,}
+\NormalTok{    birthDate }\DataTypeTok{date} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthYear }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthMonth }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthDay }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthCountry }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthState }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    birthCity }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    isDead }\DataTypeTok{char} \KeywordTok{not} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathDate }\DataTypeTok{date} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathYear }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathMonth }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathDay }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathCountry }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathState }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    deathCity }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    nameFirst }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    nameLast }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    nameGiven }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    weight }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    height }\DataTypeTok{int} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    bats }\DataTypeTok{char} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    throws }\DataTypeTok{char} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    debut }\DataTypeTok{date} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    finalGame }\DataTypeTok{date} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    retroID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    bbrefID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{null}
+\NormalTok{);}
+
+\end{Highlighting}
+\end{Shaded}
+
+    
+
+    \hypertarget{batting-table}{%
+\subsection{Batting Table}\label{batting-table}}
+
+\hypertarget{convert-all-empty-strings-to-null}{%
+\subsubsection{1) Convert all empty strings to
+NULL}\label{convert-all-empty-strings-to-null}}
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We want to convert empty strings to NULL because that empty strings mean
+text value with length zero but NULL means absence of value which can be
+any type.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I updated the empty strings to NULL for each column of the batting
+table.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ playerID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ playerID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ yearID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ yearID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ stint}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ stint}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ teamID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ teamID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ lgID}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ lgID}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ G}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ G}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ AB}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ AB}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ R}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ R}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ H}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ H}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ 2B}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ 2B}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ 3B}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ 3B}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ HR}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ HR}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ RBI}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ RBI}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ SB}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ SB}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ CS}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ CS}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ BB}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ BB}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ SO}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ SO}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ IBB}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ IBB}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ HBP}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ HBP}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ SH}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ SH}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ SF}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ SF}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{update}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{set}\NormalTok{ GIDP}\OperatorTok{=}\KeywordTok{NULL}
+\KeywordTok{where}\NormalTok{ GIDP}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SELECT count(*) FROM lahmansdb\PYZus{}to\PYZus{}clean.batting where RBI is NULL;
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[(756,)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{change-column-datatypes-to-appropriate-values-enum-int-varchar-datetime-etc}{%
+\subsubsection{2) Change column datatypes to appropriate values (ENUM,
+INT, VARCHAR, DATETIME,
+ETC)}\label{change-column-datatypes-to-appropriate-values-enum-int-varchar-datetime-etc}}
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We need datatypes for each column other than just text, so that we can
+add primary key or foreign key for the table.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I changed the data type of each column from text to the appropriate
+value, such as playerID of type varchar(9), teamID of type char(3) and
+IBB smallint.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.batting}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ playerID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{9}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ yearID }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ stint }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ teamID }\DataTypeTok{char}\NormalTok{(}\DecValTok{3}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ lgID }\DataTypeTok{char}\NormalTok{(}\DecValTok{2}\NormalTok{),}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ G }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ AB }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ R }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ H }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ 2B }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ 3B }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ HR }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ RBI }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ SB }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ CS }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ BB }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ SO }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ IBB }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ HBP }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ SH }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ SF }\DataTypeTok{smallint}\NormalTok{,}
+    \KeywordTok{modify} \KeywordTok{column}\NormalTok{ GIDP }\DataTypeTok{smallint}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{add-a-primary-key}{%
+\subsubsection{3) Add a Primary Key}\label{add-a-primary-key}}
+
+Two options for the Primary Key:
+
+\begin{itemize}
+\tightlist
+\item
+  Composite Key: playerID, yearID, stint
+\item
+  Covering Key (Index): playerID, yearID, stint, teamID
+\end{itemize}
+
+\hypertarget{choice}{%
+\paragraph{Choice}\label{choice}}
+
+    I'll choose Composite key.
+
+    \hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    This composite key consisting of playerID,yearID and stint can uniquely
+identify each row in batting table.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{add} \KeywordTok{primary} \KeywordTok{key}\NormalTok{ (playerID,yearID,stint);}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{test}{%
+\paragraph{Test}\label{test}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} SHOW KEYS FROM batting WHERE Key\PYZus{}name = \PYZsq{}PRIMARY\PYZsq{} and Column\PYZus{}name = \PYZsq{}playerID\PYZsq{}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('batting', 0, 'PRIMARY', 1, 'playerID', 'A', 19758, None, None, '', 'BTREE',
+'', '', 'YES', None)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{add-a-foreign-key-on-playerid-between-the-people-and-batting-tables}{%
+\subsubsection{4) Add a foreign key on playerID between the People and
+Batting
+Tables}\label{add-a-foreign-key-on-playerid-between-the-people-and-batting-tables}}
+
+Note: Two people in the batting table do not exist in the people table.
+How should you handle this issue?
+
+\hypertarget{explanation}{%
+\paragraph{Explanation}\label{explanation}}
+
+    We could delete the two people's rows in batting table or add two
+people's new rows in people table.
+
+    \hypertarget{change}{%
+\paragraph{Change}\label{change}}
+
+    I added a foreign key playerID in batting table referencing primary key
+playerID in people table.
+
+    \hypertarget{sql}{%
+\paragraph{SQL}\label{sql}}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{alter} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.batting}
+\KeywordTok{add} \KeywordTok{foreign} \KeywordTok{key}\NormalTok{ (playerID) }\KeywordTok{references}\NormalTok{ people(playerID);}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{tests}{%
+\paragraph{Tests}\label{tests}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} Select playerID from batting where playerID not in (select playerID from people);
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+0 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{final-create-statement}{%
+\subsubsection{Final CREATE Statement}\label{final-create-statement}}
+
+To find the create statement:
+
+\begin{itemize}
+\tightlist
+\item
+  Right click on the table name in workbench
+\item
+  Select `Copy to Clipboard'
+\item
+  Select `Create Statement'
+\end{itemize}
+
+The create statement will now be copied into your clipboard and can be
+pasted into the cell below.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{create} \KeywordTok{table}\NormalTok{ lahmansdb\_to\_clean.batting}
+\NormalTok{(}
+\NormalTok{    playerID }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{9}\NormalTok{) }\KeywordTok{not} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    yearID }\DataTypeTok{smallint} \KeywordTok{not} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    stint }\DataTypeTok{smallint} \KeywordTok{not} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    teamID }\DataTypeTok{char}\NormalTok{(}\DecValTok{3}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    lgID }\DataTypeTok{char}\NormalTok{(}\DecValTok{2}\NormalTok{) }\KeywordTok{null}\NormalTok{,}
+\NormalTok{    G }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    AB }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    R }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    H }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    \textasciigrave{}2B\textasciigrave{} }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    \textasciigrave{}3B\textasciigrave{} }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    HR }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    RBI }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    SB }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    CS }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    BB }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    SO }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    IBB }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    HBP }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    SH }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    SF }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+\NormalTok{    GIDP }\DataTypeTok{smallint} \KeywordTok{null}\NormalTok{,}
+    \KeywordTok{primary} \KeywordTok{key}\NormalTok{ (playerID, yearID, stint),}
+    \KeywordTok{constraint}\NormalTok{ batting\_ibfk\_1}
+        \KeywordTok{foreign} \KeywordTok{key}\NormalTok{ (playerID) }\KeywordTok{references}\NormalTok{ lahmansdb\_to\_clean.people (playerID)}
+\NormalTok{);}
+
+
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{part-d-sql-queries}{%
+\section{Part D: SQL Queries}\label{part-d-sql-queries}}
+
+NOTE: You must use the CLEAN lahman schema provided in HW0 for the
+queries below to ensure your answers are consistent with the solutions.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{reload\PYZus{}ext} sql
+\PY{o}{\PYZpc{}}\PY{k}{sql} mysql+pymysql://root:zxy3221915@localhost/lahmansbaseballdb
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{question-0}{%
+\subsection{Question 0}\label{question-0}}
+
+What is the average salary in baseball history?
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{sql} select avg(salary) from lahmansbaseballdb.salaries;
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansbaseballdb
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[(2085634.053125473,)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[(2085634.053125473,)]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{question-1}{%
+\subsection{Question 1}\label{question-1}}
+
+Select the players with a first name of Sam who were born in the United
+States and attended college.
+
+Include their first name, last name, playerID, school ID, yearID and
+birth state. Limit 10
+
+Hint: Use a Join between People and CollegePlaying
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{sql} select nameFirst,nameLast,playerID,schoolID,yearID,birthState
+from lahmansbaseballdb.people
+    join
+        lahmansbaseballdb.collegeplaying
+    using(playerID)
+where nameFirst = \PYZsq{}Sam\PYZsq{} and birthCountry = \PYZsq{}USA\PYZsq{} limit 10;
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansbaseballdb
+10 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('Sam', 'Barnes', 'barnesa01', 'auburn', 1918, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1919, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1920, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1921, 'AL'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1956, 'NC'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1957, 'NC'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1958, 'NC'),
+ ('Sam', 'Bowen', 'bowensa02', 'gacoast', 1971, 'GA'),
+ ('Sam', 'Bowen', 'bowensa02', 'gacoast', 1972, 'GA'),
+ ('Sam', 'Brown', 'brownsa01', 'grovecity', 1899, 'PA')]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{sql} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansbaseballdb
+10 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('Sam', 'Barnes', 'barnesa01', 'auburn', 1918, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1919, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1920, 'AL'),
+ ('Sam', 'Barnes', 'barnesa01', 'auburn', 1921, 'AL'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1956, 'NC'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1957, 'NC'),
+ ('Sam', 'Bowens', 'bowensa01', 'tennst', 1958, 'NC'),
+ ('Sam', 'Bowen', 'bowensa02', 'gacoast', 1971, 'GA'),
+ ('Sam', 'Bowen', 'bowensa02', 'gacoast', 1972, 'GA'),
+ ('Sam', 'Brown', 'brownsa01', 'grovecity', 1899, 'PA')]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{question-2}{%
+\subsection{Question 2}\label{question-2}}
+
+Update all entries with full\_name Columbia University to `Columbia
+University in the City of New York' in the Schools table. Then select
+the row.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{sql} update lahmansbaseballdb.schools
+set name\PYZus{}full = \PYZsq{}Columbia University in the City of New York\PYZsq{}
+where schoolID = \PYZsq{}columbia\PYZsq{};
+select * from lahmansbaseballdb.schools where schoolID = \PYZsq{}columbia\PYZsq{};
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansbaseballdb
+1 rows affected.
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('columbia', 'Columbia University in the City of New York', 'New York', 'NY',
+'USA')]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ * mysql+pymysql://root:***@localhost/lahmansdb\_to\_clean
+1 rows affected.
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[('columbia', 'Columbia University in the City of New York', 'New York', 'NY',
+'USA')]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{part-e-csvdatatable}{%
+\section{Part E: CSVDataTable}\label{part-e-csvdatatable}}
+
+\hypertarget{i.-conceptual-questions}{%
+\subsection{i. Conceptual Questions}\label{i.-conceptual-questions}}
+
+The purpose of this homework is to teach you the behaviour of SQL
+Databases by asking you to implement functions that will model the
+behaviour of a real database with CSVDataTable. You will mimic a SQL
+Database using CSV files.
+
+Read through the scaffolding code provided in the CSVDataTable folder
+first to understand and answer the following conceptual questions.
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Given this SQL statement:
+
+\begin{verbatim}
+ SELECT nameFirst, nameLast FROM people WHERE playerID = collied01
+\end{verbatim}
+
+  If you run find\_by\_primary\_key() on this statement, what are
+  key\_fields and field\_list?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    key\_fields: {[}`collied01'{]}
+  \item
+    field\_lists: {[}`nameFist',`nameLast'{]}
+  \end{itemize}
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  What should be checked when you are trying to INSERT a new row into a
+  table with a PK?
+
+  We should check whether the new Primary key is duplicate with the
+  already existed primary keys of the table.
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  What should be checked when you are trying to UPDATE a row in a table
+  with a PK?
+
+  We should check whether the values we want to update will create
+  duplicated primary key with other rows in the table.
+\end{enumerate}
+
+    \hypertarget{ii.-coding}{%
+\subsection{ii. Coding}\label{ii.-coding}}
+
+You are responsible for implementing and testing two classes in Python:
+CSVDataTable, BaseDataTable. The python files and data can be found in
+the assignment under Courseworks.
+
+We have already given you \textbf{find\_by\_template(self, template,
+field\_list=None, limit=None, offset=None, order\_by=None)} Use this as
+a jumping off point for the rest of your functions.
+
+Methods to complete:
+
+CSVDataTable.py - find\_by\_primary\_key(self, key\_fields,
+field\_list=None) - delete\_by\_key(self, key\_fields) -
+delete\_by\_template(self, template) - update\_by\_key(self,
+key\_fields, new\_values) - update\_by\_template(self, template,
+new\_values) - insert(self, new\_record) CSV\_table\_tests.py - You must
+test all methods. You will have to write these tests yourself. - You
+must test your methods on the People and Batting table.
+
+If you do not include tests and tests outputs 50\% of this section's
+points will be deducted at the start
+
+\hypertarget{iii.-testing}{%
+\subsection{iii. Testing}\label{iii.-testing}}
+
+Please copy the text from the output of your tests and paste it below:
+
+    \textasciitilde\textasciitilde\textasciitilde{}
+/home/simon/Applications/anaconda3/envs/HW1/bin/python
+/home/simon/MS\_CS/Databases/W4111F21/HomeworkAssignments/HW1/4111\_s21\_hw1\_programming\_CSVDataTable/tests/csv\_table\_tests.py
+DEBUG:root:CSVDataTable.\_\_init\_\_: data = \{ ``table\_name'':
+``People'', ``connect\_info'': \{ ``directory'':
+``/home/simon/MS\_CS/Databases/W4111F21/HomeworkAssignments/HW1/4111\_s21\_hw1\_programming\_CSVDataTable/data/Baseball'',
+``file\_name'': ``People.csv'' \}, ``key\_columns'': {[} ``playerID''
+{]}, ``debug'': true \}
+
+find\_by\_primary\_key(): Known Record \{`playerID': `aardsda01',
+`birthYear': `1981', `birthMonth': `12', `birthDay': `27',
+`birthCountry': `USA', `birthState': `CO', `birthCity': `Denver',
+`deathYear': '`, 'deathMonth': '`, 'deathDay': '`, 'deathCountry': '`,
+'deathState': '`, 'deathCity': '`, 'nameFirst': `David', `nameLast':
+`Aardsma', `nameGiven': `David Allan', `weight': `215', `height': `75',
+`bats': `R', `throws': `R', `debut': `2004-04-06', `finalGame':
+`2015-08-23', `retroID': `aardd001', `bbrefID': `aardsda01'\}
+
+find\_by\_primary\_key(): Unknown Record None
+
+find\_by\_template(): Known Template DEBUG:root:CSVDataTable.\_load:
+Loaded 19619 rows {[}\{`playerID': `aardsda01', `birthYear': `1981',
+`birthMonth': `12', `birthDay': `27', `birthCountry': `USA',
+`birthState': `CO', `birthCity': `Denver', `deathYear': '`,
+'deathMonth': '`, 'deathDay': '`, 'deathCountry': '`, 'deathState': '`,
+'deathCity': '`, 'nameFirst': `David', `nameLast': `Aardsma',
+`nameGiven': `David Allan', `weight': `215', `height': `75', `bats':
+`R', `throws': `R', `debut': `2004-04-06', `finalGame': `2015-08-23',
+`retroID': `aardd001', `bbrefID': `aardsda01'\}{]}
+
+find\_by\_template(): UnKnown Template {[}{]}
+
+delete\_by\_key(): Known Record 1 row deleted
+
+delete\_by\_key(): UnKnown Record 0 row deleted
+
+delete\_by\_template(): Known Template 1527 rows deleted
+
+delete\_by\_template(): UnKnown Template 0 rows deleted
+
+update\_by\_key(): Known Record,no duplicate primary key 1 row updated
+
+update\_by\_key(): UnKnown Record,no duplicate primary key 0 row updated
+
+update\_by\_template(): Known Template,no duplicate primary key 100 rows
+updated
+
+update\_by\_template(): UnKnown Template,no duplicate primary key 0 rows
+updated
+
+insert(): no duplicate primary key None
+
+update\_by\_key(): Known Record,duplicate primary key An error occurred:
+can't update with duplicated primary key
+
+update\_by\_key(): UnKnown Record,duplicate primary key 0 row updated
+
+update\_by\_template(): Known Template,duplicate primary key An error
+occurred: can't update with duplicated primary key
+
+update\_by\_template(): UnKnown Template,duplicate primary key 0 rows
+updated
+
+insert(): duplicate primary key An error occurred: can't insert with
+duplicated primary key
+
+Process finished with exit code 0
+
+    \textasciitilde\textasciitilde\textasciitilde{}
+DEBUG:root:CSVDataTable.\_\_init\_\_: data = \{ ``table\_name'':
+``Batting'', ``connect\_info'': \{ ``directory'':
+``/home/simon/MS\_CS/Databases/W4111F21/HomeworkAssignments/HW1/4111\_s21\_hw1\_programming\_CSVDataTable/data/Baseball'',
+``file\_name'': ``Batting.csv'' \}, ``key\_columns'': {[} ``playerID'',
+``yearID'', ``stint'' {]}, ``debug'': true \}
+
+find\_by\_primary\_key(): Known Record DEBUG:root:CSVDataTable.\_load:
+Loaded 105861 rows \{`playerID': `abercda01', `yearID': `1871', `stint':
+`1', `teamID': `TRO', `lgID': `NA', `G': `1', `AB': `4', `R': `0', `H':
+`0', `2B': `0', `3B': `0', `HR': `0', `RBI': `0', `SB': `0', `CS': `0',
+`BB': `0', `SO': `0', `IBB': '`, 'HBP': '`, 'SH': '`, 'SF': '`, 'GIDP':
+`0'\}
+
+find\_by\_primary\_key(): Unknown Record None
+
+find\_by\_template(): Known Template {[}\{`playerID': `addybo01',
+`yearID': `1871', `stint': `1', `teamID': `RC1', `lgID': `NA', `G':
+`25', `AB': `118', `R': `30', `H': `32', `2B': `6', `3B': `0', `HR':
+`0', `RBI': `13', `SB': `8', `CS': `1', `BB': `4', `SO': `0', `IBB': '`,
+'HBP': '`, 'SH': '`, 'SF': '`, 'GIDP': `0'\}{]}
+
+find\_by\_template(): UnKnown Template {[}{]}
+
+delete\_by\_key(): Known Record 1 row deleted
+
+delete\_by\_key(): UnKnown Record 0 row deleted
+
+delete\_by\_template(): Known Template 5 rows deleted
+
+delete\_by\_template(): UnKnown Template 0 rows deleted
+
+update\_by\_key(): Known Record,no duplicate primary key 1 row updated
+
+update\_by\_key(): UnKnown Record,no duplicate primary key 0 row updated
+
+update\_by\_template(): Known Template,no duplicate primary key 82 rows
+updated
+
+update\_by\_template(): UnKnown Template,no duplicate primary key 0 rows
+updated
+
+insert(): no duplicate primary key None
+
+update\_by\_key(): Known Record,duplicate primary key An error occurred:
+can't update with duplicated primary key
+
+update\_by\_key(): UnKnown Record,duplicate primary key 0 row updated
+
+update\_by\_template(): Known Template,duplicate primary key An error
+occurred: can't update with duplicated primary key
+
+update\_by\_template(): UnKnown Template,duplicate primary key 0 rows
+updated
+
+insert(): duplicate primary key An error occurred: can't insert with
+duplicated primary key
+
+Process finished with exit code 0
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

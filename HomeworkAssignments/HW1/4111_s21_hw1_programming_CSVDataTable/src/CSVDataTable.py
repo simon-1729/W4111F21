@@ -138,11 +138,13 @@ class CSVDataTable(BaseDataTable):
             by the key.
         """
 
-        dictionary = dict(zip(self._key_columns, key_fields))
+        dictionary = dict(zip(self.get_key_column(), key_fields))
 
         # What method can you use?
-
-        return
+        for r in reversed(self.get_rows()):
+            if CSVDataTable.matches_template(r, dictionary):
+                return CSVDataTable._project(r, field_list)
+        return None
 
     def find_by_template(self, template, field_list=None, limit=None, offset=None, order_by=None):
         """
@@ -158,7 +160,7 @@ class CSVDataTable(BaseDataTable):
         """
         result = []
 
-        for r in reversed(self._rows):
+        for r in reversed(self.get_rows()):
             if CSVDataTable.matches_template(r, template):
                 new_r = CSVDataTable._project(r, field_list)
                 result.append(new_r)
@@ -173,8 +175,12 @@ class CSVDataTable(BaseDataTable):
         """
 
         # HINT: Create a dictionary of values/a template for key fields, then call a method you wrote
-
-        return
+        row_to_remove = self.find_by_primary_key(key_fields)
+        if row_to_remove is not None:
+            self.get_rows().remove(row_to_remove)
+            return str(1)+' '+"row deleted"
+        else:
+            return str(0)+' '+"row deleted"
 
     def delete_by_template(self, template):
         """
@@ -185,8 +191,12 @@ class CSVDataTable(BaseDataTable):
         counter = 0
 
         # Iterate through rows, if matches, remove the row
+        for r in reversed(self.get_rows()):
+            if CSVDataTable.matches_template(r, template):
+                self.get_rows().remove(r)
+                counter += 1
 
-        return counter
+        return str(counter)+' '+"rows deleted"
 
     def update_by_key(self, key_fields, new_values):
         """
@@ -197,8 +207,29 @@ class CSVDataTable(BaseDataTable):
         """
 
         # HINT: Create a dictionary of values/a template for key fields, then call a method you wrote
+        key_test = []
+        do_test = False
+        row_to_update = self.find_by_primary_key(key_fields)
+        if row_to_update is None:
+            return str(0)+' '+"row updated"
+        # check primary key duplicate
+        pkey_list = self.get_key_column()
+        for i in range(len(pkey_list)):
+            if new_values.get(pkey_list[i]) is not None and new_values.get(pkey_list[i]) != key_fields[i]:
+                key_test.append(new_values.get(pkey_list[i]))
+                do_test = True
+            else:
+                key_test.append(key_fields[i])
 
-        return
+        if do_test:
+            test_row = self.find_by_primary_key(key_test)
+            if test_row is not None:
+                raise Exception("can't update with duplicated primary key")
+        # update the row
+        for k, v in new_values.items():
+            row_to_update[k] = v
+
+        return str(1)+' '+"row updated"
 
     def update_by_template(self, template, new_values):
         """
@@ -207,11 +238,34 @@ class CSVDataTable(BaseDataTable):
         :return: Number of rows updated.
         """
 
-        counter = 0
-
         # Iterate through rows, if matches, update the row... what should you check first?
+        counter = 0
+        do_update = False
+        # check duplicate primary key first
+        for row in reversed(self.get_rows()):
+            if self.matches_template(row, template):
+                do_update = True
+                key_test = []
+                do_test = False
+                for column in self.get_key_column():
+                    if new_values.get(column) is not None and row[column] != new_values.get(column):
+                        key_test.append(new_values[column])
+                        do_test = True
+                    else:
+                        key_test.append(row[column])
+                    if do_test:
+                        test_row = self.find_by_primary_key(key_test)
+                        if test_row is not None:
+                            raise Exception("can't update with duplicated primary key")
 
-        return counter
+        # update
+        if do_update:
+            for row in reversed(self.get_rows()):
+                if self.matches_template(row, template):
+                    for k, v in new_values.items():
+                        row[k] = v
+                        counter += 1
+        return str(counter)+' '+"rows updated"
 
     def insert(self, new_record):
         """
@@ -221,7 +275,14 @@ class CSVDataTable(BaseDataTable):
         """
 
         # HINT: Append a new_record... what should you check first?
-
-
+        key_test = []
+        for column in self.get_key_column():
+            key_test.append(new_record[column])
+        if self.find_by_primary_key(key_test) is not None:
+            raise Exception("can't insert with duplicated primary key")
+        else:
+            self.get_rows().append(new_record)
+        return
+        
     def get_rows(self):
         return self._rows

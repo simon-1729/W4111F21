@@ -22,6 +22,7 @@ class BaseDataTable(ABC):
         :param debug: If true, print debug messages.
         """
         pass
+        
 
     @abstractmethod
     def find_by_primary_key(self, key_fields, field_list=None):
