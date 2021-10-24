@@ -130,4 +130,9 @@ dmypy.json
 
 
 HomeworkAnswers/
+<<<<<<< Updated upstream
 /DoNotShare/
+=======
+# csv file
+*.csv
+>>>>>>> Stashed changes

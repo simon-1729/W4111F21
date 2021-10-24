@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/4111_s21_hw1_programming_CSVDataTable" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/4111_s21_hw1_programming_CSVDataTable/tests" isTestSource="true" />
     </content>
+    <content url="file://$MODULE_DIR$/../HW2" />
     <orderEntry type="jdk" jdkName="Python 3.9 (HW1)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
